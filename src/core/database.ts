@@ -34,6 +34,6 @@ export class Database {
    * sync
    */
   sync(): void {
-    this.sequelize.sync({ force: true, logging: true });
+    this.sequelize.sync({ force: false, logging: true });
   }
 }
