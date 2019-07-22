@@ -3,9 +3,6 @@ Api de uma aplicação web para o compartilhamento de GIFs.
 
 ## Dependências globais
 * `brew install ffmpeg graphicsmagick`
-```sh
-PostgreSQL
-```
 
 ## Configuração
 ```sh
