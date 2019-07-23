@@ -1,5 +1,4 @@
 import bcrypt from 'bcrypt';
-import { APP_PORT } from '../config';
 import { Inject } from '../core/decorators';
 import { ImageDAO } from '../dao/image-dao';
 import Image from '../models/image';
@@ -26,9 +25,12 @@ export class ImageController {
    *
    * @param fileName
    */
-  async search(fileName: string): Promise<Image | null> {
+  async search(fileName: string, parse: boolean = true): Promise<Image | null> {
     const image = await this.imageDAO.findByName(fileName);
-    return this.parseOutput(image);
+    if (parse) {
+      return this.parseOutput(image);
+    }
+    return image;
   }
 
   /**
@@ -47,7 +49,7 @@ export class ImageController {
   async save(image: Image): Promise<Image | null> {
     this.validate(image);
 
-    const file = this.fileController.saveGIF(image.base64);
+    const file = this.fileController.saveGif(image.base64);
     image.fileName = file.name;
     image.fileType = file.type;
 
@@ -59,19 +61,14 @@ export class ImageController {
   /**
    * checkPassword
    *
-   * @param fileName
+   * @param image
    * @param password
    */
-  async checkPassword(
-    fileName: string,
-    password: string | undefined
-  ): Promise<boolean> {
-    const image = await this.imageDAO.findByName(fileName);
-
+  checkPassword(image: any, password: any): boolean {
     if (
       !image ||
       !image.private ||
-      (image.private && bcrypt.compareSync(password, image.password))
+      (image.private && bcrypt.compareSync(password || '', image.password))
     ) {
       return true;
     }
@@ -81,10 +78,9 @@ export class ImageController {
   /**
    * checkExpiration
    *
-   * @param fileName
+   * @param image
    */
-  async checkExpiration(fileName: string): Promise<boolean> {
-    const image = await this.imageDAO.findByName(fileName);
+  checkExpiration(image: any): boolean {
     const currentDate = new Date();
 
     if (!image || currentDate < image.expirationAt) {
@@ -102,7 +98,9 @@ export class ImageController {
     if (image) {
       const output = image.get();
       output.password = null;
-      output.url = `http://localhost:${APP_PORT}/storage/${image.fileName}`;
+      output.url = `http://localhost:${process.env.APP_PORT}/storage/${
+        image.fileName
+      }`;
       return output;
     }
     return null;

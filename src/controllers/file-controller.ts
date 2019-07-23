@@ -1,24 +1,20 @@
 import fs from 'fs';
 import gify from 'gify';
-import { STORAGE_PATH } from '../config';
 
 export class FileController {
   /**
-   * saveGIF
+   * saveGif
    *
    * @param base64
    */
-  saveGIF(base64: string): any {
-    const buffer = this.decodeBase64Image(base64);
+  saveGif(base64: string): any {
+    const buffer = this.decodeBase64Gif(base64);
     const path = this.createFilePath('gif');
-
-    if (buffer.type !== 'image/gif') {
-      throw new Error('[base64] is accept only gif type.');
-    }
 
     fs.writeFileSync(path, buffer.data);
 
-    const fileName = path.substr(path.lastIndexOf('/') + 1, path.length - 1);
+    const lastBar = path.lastIndexOf('/');
+    const fileName = path.substr(lastBar + 1, path.length - 1);
 
     return {
       name: fileName,
@@ -46,21 +42,21 @@ export class FileController {
   }
 
   /**
-   * createBase64GIF
+   * createBase64Gif
    *
    * @param video
    * @param options
    */
-  async createBase64GIF(video: any, options: any): Promise<string> {
+  async createBase64Gif(video: any, options: any): Promise<string> {
     const tmpVideo = await this.saveVideo(video);
     const tmpImage = this.createFilePath('gif');
 
     return new Promise((resolve: Function) => {
-      gify(tmpVideo, tmpImage, options, error => {
+      gify(tmpVideo, tmpImage, options, async error => {
         if (error) {
           throw new Error(error);
         }
-        const base64Image = this.encodeBase64Image(tmpImage);
+        const base64Image = await this.encodeBase64Gif(tmpImage);
         this.deleteFile(tmpVideo);
         this.deleteFile(tmpImage);
 
@@ -77,7 +73,7 @@ export class FileController {
   deleteFile(path: string): void {
     fs.unlink(path, error => {
       if (error) {
-        console.error(error);
+        throw error;
       }
     });
   }
@@ -88,7 +84,9 @@ export class FileController {
    * @param type
    */
   createFilePath(type: string): string {
-    return STORAGE_PATH.concat('/')
+    return process
+      .cwd()
+      .concat('/storage/')
       .concat(
         Math.random()
           .toString(36)
@@ -102,11 +100,11 @@ export class FileController {
   }
 
   /**
-   * decodeBase64Image
+   * decodeBase64Gif
    *
    * @param dataString
    */
-  private decodeBase64Image(dataString: string): any {
+  private decodeBase64Gif(dataString: string): any {
     const matches: RegExpMatchArray | null = dataString.match(
       /^data:([A-Za-z-+\/]+);base64,(.+)$/
     );
@@ -116,6 +114,10 @@ export class FileController {
       throw new Error('[base64] is invalid input string.');
     }
 
+    if (matches[1] !== 'image/gif') {
+      throw new Error('[base64] is accept only gif type.');
+    }
+
     response.type = matches[1];
     response.data = new Buffer(matches[2], 'base64');
 
@@ -123,12 +125,18 @@ export class FileController {
   }
 
   /**
-   * encodeBase64Image
+   * encodeBase64Gif
    *
    * @param path
    */
-  private encodeBase64Image(path: any): string {
-    const image = fs.readFileSync(path);
-    return 'data:image/gif;base64,' + new Buffer(image).toString('base64');
+  private encodeBase64Gif(path: any): Promise<string> {
+    return new Promise((resolve: Function) => {
+      fs.readFile(path, (error, data) => {
+        if (error) {
+          throw error;
+        }
+        resolve('data:image/gif;base64,' + new Buffer(data).toString('base64'));
+      });
+    });
   }
 }

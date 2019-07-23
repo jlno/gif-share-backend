@@ -12,12 +12,12 @@ export class VideoController {
   private fileController: FileController;
 
   /**
-   * videoToBase64GIF
+   * videoToBase64Gif
    *
    * @param options
    * @param file
    */
-  async videoToBase64GIF(options: any, file: any): Promise<string> {
+  async videoToBase64Gif(options: any, file: any): Promise<string> {
     this.validate(options, file);
 
     const opts = {
@@ -25,7 +25,7 @@ export class VideoController {
       duration: options.end - options.start
     };
 
-    return await this.fileController.createBase64GIF(file.video, opts);
+    return await this.fileController.createBase64Gif(file.video, opts);
   }
 
   /**
@@ -41,12 +41,15 @@ export class VideoController {
     if (isNaN(options.start)) {
       throw new Error('[start] is required.');
     } else {
-      options.start = +options.start;
+      options.start = Number(options.start);
     }
     if (isNaN(options.end)) {
       throw new Error('[end] is required.');
     } else {
-      options.end = +options.end;
+      options.end = Number(options.end);
+    }
+    if (options.end - options.start > 15) {
+      throw new Error('[start]-[end] is invalid.');
     }
   }
 }
