@@ -36,7 +36,7 @@ export class ImageService {
    * @param request
    * @param response
    */
-  @Get()
+  @Get('/public')
   async findPublicImages(request: Request, response: Response): Promise<void> {
     try {
       const result = await this.imageController.findPublicImages();
