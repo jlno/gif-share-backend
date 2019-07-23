@@ -36,9 +36,9 @@ export class FileController {
       const typeVideo = file.name.split('.').pop();
       const pathVideo = this.createFilePath(typeVideo);
 
-      file.mv(pathVideo, err => {
-        if (err) {
-          throw new Error(err);
+      file.mv(pathVideo, error => {
+        if (error) {
+          throw new Error(error);
         }
         resolve(pathVideo);
       });
@@ -49,16 +49,16 @@ export class FileController {
    * createBase64GIF
    *
    * @param video
-   * @param opts
+   * @param options
    */
-  async createBase64GIF(video: any, opts: any): Promise<string> {
+  async createBase64GIF(video: any, options: any): Promise<string> {
     const tmpVideo = await this.saveVideo(video);
     const tmpImage = this.createFilePath('gif');
 
     return new Promise((resolve: Function) => {
-      gify(tmpVideo, tmpImage, opts, err => {
-        if (err) {
-          throw err;
+      gify(tmpVideo, tmpImage, options, error => {
+        if (error) {
+          throw new Error(error);
         }
         const base64Image = this.encodeBase64Image(tmpImage);
         this.deleteFile(tmpVideo);
