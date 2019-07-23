@@ -23,7 +23,7 @@ export class VideoService {
   @Post('/converter')
   async converter(request: Request, response: Response): Promise<void> {
     try {
-      const result = await this.videoController.videoToBase64GIF(
+      const result = await this.videoController.videoToBase64Gif(
         request.body,
         request.files
       );
