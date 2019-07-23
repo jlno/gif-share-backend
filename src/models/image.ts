@@ -16,7 +16,7 @@ import {
 @Table({ tableName: 'image' })
 export default class Image extends Model<Image> {
   /**
-   * name
+   * fileName
    */
   @PrimaryKey
   @AllowNull(false)
