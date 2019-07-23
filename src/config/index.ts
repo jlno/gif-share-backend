@@ -1,7 +1,20 @@
-export const DB_HOST = 'localhost';
-export const DB_PORT = 5432;
-export const DB_NAME = 'gifshare';
-export const DB_USERNAME = 'admin';
-export const DB_PASSWORD = 'admin';
-export const APP_PORT = 8081;
-export const STORAGE_PATH = process.cwd() + '/storage';
+import * as dotenv from 'dotenv';
+
+export class Config {
+  static setEnvironments(): void {
+    let path: string;
+
+    switch (process.env.NODE_ENV) {
+      case 'test':
+        path = `${__dirname}/.env.test`;
+        break;
+      case 'prod':
+        path = `${__dirname}/.env.prod`;
+        break;
+      default:
+        path = `${__dirname}/.env.dev`;
+    }
+
+    dotenv.config({ path: path });
+  }
+}

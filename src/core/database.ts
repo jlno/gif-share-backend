@@ -1,5 +1,4 @@
 import { Sequelize } from 'sequelize-typescript';
-import { DB_HOST, DB_NAME, DB_PASSWORD, DB_PORT, DB_USERNAME } from '../config';
 
 /**
  * Database
@@ -21,19 +20,24 @@ export class Database {
   init(): void {
     this.sequelize = new Sequelize({
       dialect: 'postgres',
-      host: DB_HOST,
-      port: DB_PORT,
-      username: DB_USERNAME,
-      password: DB_PASSWORD,
-      database: DB_NAME,
-      modelPaths: [__dirname + '/../models/*.ts']
-    });
+      host: process.env.DB_HOST,
+      port: process.env.DB_PORT,
+      username: process.env.DB_USERNAME,
+      password: process.env.DB_PASSWORD,
+      database: process.env.DB_NAME,
+      modelPaths: [__dirname + '/../models/*']
+    } as any);
   }
 
   /**
    * sync
    */
   sync(): void {
-    this.sequelize.sync({ force: false, logging: true });
+    const dropTables = false;
+
+    this.sequelize.sync({
+      force: dropTables,
+      logging: log => console.log(log)
+    });
   }
 }
