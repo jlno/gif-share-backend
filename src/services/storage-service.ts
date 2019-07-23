@@ -1,6 +1,5 @@
 import express, { Request, Response } from 'express';
-import { UNAUTHORIZED, GONE } from 'http-status-codes';
-import { STORAGE_PATH } from '../config';
+import { GONE, UNAUTHORIZED } from 'http-status-codes';
 import { ImageController } from '../controllers/image-controller';
 import { Inject } from '../core/decorators';
 import { Express } from '../core/express';
@@ -25,7 +24,7 @@ export class StorageService {
     app.use(
       path,
       (req, res, next) => this.checkImageData(req, res, next),
-      express.static(STORAGE_PATH)
+      express.static(process.cwd() + path)
     );
   }
 
@@ -40,8 +39,9 @@ export class StorageService {
     const fileName = request.path.replace('/', '');
     const password = request.header('password');
 
-    const pw = await this.imageController.checkPassword(fileName, password);
-    const ex = await this.imageController.checkExpiration(fileName);
+    const image = await this.imageController.search(fileName, false);
+    const pw = this.imageController.checkPassword(image, password);
+    const ex = this.imageController.checkExpiration(image);
 
     if (!pw) {
       response.sendStatus(UNAUTHORIZED);
