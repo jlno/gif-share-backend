@@ -23,7 +23,7 @@ src/config/
 * `npm start`
 
 ## Teste
-* `npm test`
+* `npm run test`
 
 ## Build
 * `npm run build`
