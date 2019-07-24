@@ -5,9 +5,9 @@
   "main": "index.js",
   "scripts": {
     "start": "npm run build:live",
+    "test": "NODE_ENV=test jest --detectOpenHandles",
     "copy:env": "copyfiles -f src/config/.env.* build/config",
-    "copy:storage": "copyfiles -f storage/* build/storage",
-    "build": "tsc -p . && npm run copy:env && npm run copy:storage",
+    "build": "tsc -p . && npm run copy:env",
     "build:live": "NODE_ENV=dev nodemon --watch 'src/**/*.ts' --exec 'ts-node' src/index.ts"
   },
   "author": "Juliano Gonçalves dos Santos",
@@ -44,6 +44,9 @@
     "validator": "^11.0.0"
   },
   "devDependencies": {
-    "copyfiles": "^2.1.1"
+    "@types/jest": "^24.0.15",
+    "copyfiles": "^2.1.1",
+    "jest": "^24.8.0",
+    "ts-jest": "^24.0.2"
   }
 }
