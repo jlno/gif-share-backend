@@ -6,7 +6,7 @@ Api de uma aplicação web para o compartilhamento de GIFs.
 PostgreSQL
 ```
 
-## Dependências globaisds
+## Dependências globais
 * `brew install ffmpeg graphicsmagick`
 
 ## Configuração
