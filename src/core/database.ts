@@ -4,6 +4,9 @@ import { Sequelize } from 'sequelize-typescript';
  * Database
  */
 export class Database {
+  /**
+   * sequelize
+   */
   private sequelize: Sequelize;
 
   /**
