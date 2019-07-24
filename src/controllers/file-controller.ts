@@ -7,19 +7,24 @@ export class FileController {
    *
    * @param base64
    */
-  saveGif(base64: string): any {
+  saveGif(base64: string): Promise<any> {
     const buffer = this.decodeBase64Gif(base64);
     const path = this.createFilePath('gif');
 
-    fs.writeFileSync(path, buffer.data);
+    return new Promise((resolve: Function) => {
+      fs.writeFile(path, buffer.data, error => {
+        if (error) {
+          throw error;
+        }
+        const lastBar = path.lastIndexOf('/');
+        const fileName = path.substr(lastBar + 1, path.length - 1);
 
-    const lastBar = path.lastIndexOf('/');
-    const fileName = path.substr(lastBar + 1, path.length - 1);
-
-    return {
-      name: fileName,
-      type: buffer.type
-    };
+        resolve({
+          name: fileName,
+          type: buffer.type
+        });
+      });
+    });
   }
 
   /**
@@ -34,7 +39,7 @@ export class FileController {
 
       file.mv(pathVideo, error => {
         if (error) {
-          throw new Error(error);
+          throw error;
         }
         resolve(pathVideo);
       });
@@ -54,7 +59,7 @@ export class FileController {
     return new Promise((resolve: Function) => {
       gify(tmpVideo, tmpImage, options, async error => {
         if (error) {
-          throw new Error(error);
+          throw error;
         }
         const base64Image = await this.encodeBase64Gif(tmpImage);
         this.deleteFile(tmpVideo);
@@ -84,9 +89,8 @@ export class FileController {
    * @param type
    */
   createFilePath(type: string): string {
-    return process
-      .cwd()
-      .concat('/storage/')
+    return __dirname
+      .concat('/../../storage/')
       .concat(
         Math.random()
           .toString(36)

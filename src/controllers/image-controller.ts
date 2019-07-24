@@ -49,7 +49,7 @@ export class ImageController {
   async save(image: Image): Promise<Image | null> {
     this.validate(image);
 
-    const file = this.fileController.saveGif(image.base64);
+    const file = await this.fileController.saveGif(image.base64);
     image.fileName = file.name;
     image.fileType = file.type;
 
