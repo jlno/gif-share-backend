@@ -1,6 +1,5 @@
 build/
 node_modules/
-storage/*.gif
-storage/*.mp4
+storage/
 yarn.lock
 package-lock.json
