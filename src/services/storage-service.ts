@@ -24,7 +24,7 @@ export class StorageService {
     app.use(
       path,
       (req, res, next) => this.checkImageData(req, res, next),
-      express.static(process.cwd() + path)
+      express.static(__dirname + '/../..' + path)
     );
   }
 
