@@ -1,6 +1,11 @@
 # gif-share-backend
 Api de uma aplicação web para o compartilhamento de GIFs.
 
+<img src="https://i.imgur.com/ymcBj9s.png" />
+
+## Demo
+https://imgur.com/KOezvsV
+
 ## Banco de dados
 ```
 PostgreSQL
