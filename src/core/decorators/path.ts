@@ -8,7 +8,7 @@ export function _path(value: string): Function {
       pathList = pathList.reverse();
 
       while (pathList.length > 0) {
-        const item = pathList.splice(0, 1).pop();
+        const item = pathList.shift();
         item.attach(() => ref.prototype, value + item.path);
       }
       Express.setPathList(ref.prototype, []);
