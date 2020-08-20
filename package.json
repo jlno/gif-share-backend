@@ -22,7 +22,7 @@
     "@types/express-fileupload": "^1.1.0",
     "@types/node": "^12.0.2",
     "@types/sequelize": "^4.28.3",
-    "bcrypt": "^3.0.6",
+    "bcrypt": "^5.0.0",
     "bluebird": "^3.5.5",
     "body-parser": "^1.19.0",
     "compression": "^1.7.4",
